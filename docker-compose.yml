@@ -1,0 +1,78 @@
+version: "3.7"
+services:
+
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: ./.docker/go/Dockerfile
+      target: prod
+    image: ferreirafernandar/hello_go
+    depends_on:
+      - "mysql"
+    networks:
+      - k8s-go-network
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    labels:
+      project.name: ${PROJECT_NAME}
+
+  nginx:
+    container_name: go
+    build:
+      context: .docker/nginx
+      dockerfile: Dockerfile
+    entrypoint: " dockerize -wait http://web:8000 -timeout 40s /docker-entrypoint.sh"
+    command: ["nginx", "-g", "daemon off;"]
+    networks:
+      - k8s-go-network
+    restart: unless-stopped
+    tty: true
+    environment:
+      - GO_PATH=web
+      - GO_PORT=8000
+    ports:
+      - "8080:80"
+    depends_on:
+      - "web"
+    volumes:
+      - ./.docker/nginx/templates:/etc/nginx/templates
+      - ./www:/usr/share/nginx/html
+    labels:
+      project.name: ${PROJECT_NAME}
+
+  mysql:
+    container_name: mysql
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    env_file: 
+      - '.env'
+    networks:
+      - k8s-go-network
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+    labels:
+      project.name: ${PROJECT_NAME}
+
+networks:
+  k8s-go-network:
+    driver: bridge
+    labels:
+     project.name: ${PROJECT_NAME}
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+        type: none
+        o: bind
+        device: ".docker/mysql/data"
+    labels:
+      project.name: ${PROJECT_NAME}
