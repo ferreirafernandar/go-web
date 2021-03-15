@@ -3,9 +3,6 @@
 substitutions:
   _IMAGE_VERSION: 1.0.0
 steps:
-  - id: 'cp_.env'
-    args:
-      - 'cp .env.example .env'
   - id: "go_version"
     name: "gcr.io/cloud-builders/go"
     args: ["version"]
