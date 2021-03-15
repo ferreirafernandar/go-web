@@ -3,7 +3,7 @@
 substitutions:
   _IMAGE_VERSION: 1.0.0
 steps:
-  - id: 'cp .env'
+  - id: 'cp_.env'
     args:
       - 'cp .env.example .env'
   - id: "go_version"
