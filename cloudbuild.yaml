@@ -16,7 +16,7 @@ steps:
   - id: 'login docker hub'  
     name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
-    args: ['-c', 'docker login --username=$USERNAME --password=$PASSWORD']
+    args: ['-c', 'docker login --username=$$USERNAME --password=$$PASSWORD']
     secretEnv: ['docker-username', 'docker-password']
 
   - id: 'build image docker'  
