@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-mysql
+  labels:
+    app: hello-mysql
+    tier: db
+    yk1: k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-mysql
+  template:
+    metadata:
+      labels:
+        app: hello-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:latest
+          args:
+            # Depreceated in mysql 8 https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-0.html
+            # - "--ignore-db-dir=lost+found"
+            - "--default-authentication-plugin=mysql_native_password"
+          env:
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials-secret
+                  key: username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials-secret
+                  key: password
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials-secret
+                  key: root_passeord
+            - name: MYSQL_DATABASE
+              value: test_db_k8s
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-persistent-storage
+      volumes:
+          - name: mysql-persistent-storage
+            persistentVolumeClaim:
+              claimName: mysql-pv-claim
