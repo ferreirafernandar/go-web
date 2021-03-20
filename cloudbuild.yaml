@@ -1,26 +1,27 @@
 # In this directory, run the following command to build this builder.
 # $ gcloud builds submit . --config=cloudbuild.yaml
 steps: 
-  - id: "go_version"
+  - id: "Show Go Lang Version"
     name: "gcr.io/cloud-builders/go"
     args: ["version"]
     env: ["GOPATH=."]
-  - id: "go_test"
+
+  - id: "Run test"
     name: "gcr.io/cloud-builders/go"
     args: ["test","./..."]
     env: ["GOPATH=."]
 
-  - id: 'login docker hub'  
+  - id: 'Login Dockerhub'  
     name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
     args: ['-c', 'docker login -u ${_USERNAME} -p ${_PASSWORD}']
 
-  - id: 'build image docker'  
+  - id: 'Build image docker'  
     name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
     args: ['-c', 'docker build -t ${_USERNAME}/${_REPOSITORY}:${_TAG} -f .docker/go/Dockerfile .']
 
-  - id: 'push image docker'   
+  - id: 'Push image docker'   
     name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
     args: ['-c', 'docker push ${_USERNAME}/${_REPOSITORY}:${_TAG}']

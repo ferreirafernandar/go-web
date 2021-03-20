@@ -21,5 +21,6 @@ func main() {
 	}
 	http.HandleFunc("/hello", Hello)
 	http.HandleFunc("/", Greeting)
+	http.HandleFunc("/healthcheck", func(rw http.ResponseWriter, r *http.Request) { io.WriteString(rw, "I'm healthy") })
 	log.Fatal(s.ListenAndServe())
 }
