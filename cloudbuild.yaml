@@ -15,17 +15,17 @@ steps:
   - id: 'login docker hub'  
     name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
-    args: ['-c', 'docker login --username=$$USERNAME --password=$$PASSWORD']
-    secretEnv: ['USERNAME', 'PASSWORD']
+    args: ['-c', 'docker login --_USERNAME=$$_USERNAME --_PASSWORD=$$_PASSWORD']
+    secretEnv: ['_USERNAME', '_PASSWORD']
 
   - id: 'build image docker'  
     name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
-    args: ['-c', 'docker build -t $$USERNAME/REPOSITORY:TAG -f .docker/go/Dockerfile .']
-    secretEnv: ['USERNAME','REPOSITORY','TAG']
+    args: ['-c', 'docker build -t $$_USERNAME/_REPOSITORY:_TAG -f .docker/go/Dockerfile .']
+    secretEnv: ['_USERNAME','_REPOSITORY','_TAG']
 
   - id: 'push image docker'   
     name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
-    args: ['-c', 'docker push $$USERNAME/REPOSITORY:TAG']
-    secretEnv: ['USERNAME','REPOSITORY','TAG']
+    args: ['-c', 'docker push $$_USERNAME/_REPOSITORY:_TAG']
+    secretEnv: ['_USERNAME','_REPOSITORY','_TAG']
