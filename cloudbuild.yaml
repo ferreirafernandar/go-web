@@ -12,68 +12,16 @@ steps:
     args: ["test","./..."]
     env: ["GOPATH=."]
 
-  - id: 'login docker hub'  
+  - id: 'build'
     name: 'gcr.io/cloud-builders/docker'
-    entrypoint: 'bash'
-    args: ['-c', 'docker login --username=$$USERNAME --password=$$PASSWORD']
-    env:
-      - name: username
-        valueFrom:
-          secretKeyRef:
-            name: docker-credentials-secret
-            key: username
-      - name: password
-        valueFrom:
-          secretKeyRef:
-            name: docker-credentials-secret
-            key: password
-
-  - id: 'build image docker'  
-    name: 'gcr.io/cloud-builders/docker'
-    entrypoint: 'bash'
-    args: ['-c', 'docker build -t $$USERNAME/REPOSITORY:TAG .']
-    env:
-      - name: username
-        valueFrom:
-          secretKeyRef:
-            name: docker-credentials-secret
-            key: username
-      - name: repository
-        valueFrom:
-          secretKeyRef:
-            name: docker-credentials-secret
-            key: repository 
-      - name: tag
-        valueFrom:
-          secretKeyRef:
-            name: docker-credentials-secret
-            key: tag 
-
-
- - name: MYSQL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: db-credentials-secret
-                  key: password
-
-
-  - id: 'push image docker'   
-    name: 'gcr.io/cloud-builders/docker'
-    entrypoint: 'bash'
-    args: ['-c', 'docker push $$USERNAME/REPOSITORY:TAG']
-    env:
-      - name: username
-        valueFrom:
-          secretKeyRef:
-            name: docker-credentials-secret
-            key: username
-      - name: repository
-        valueFrom:
-          secretKeyRef:
-            name: docker-credentials-secret
-            key: repository 
-      - name: tag
-        valueFrom:
-          secretKeyRef:
-            name: docker-credentials-secret
-            key: tag 
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/go_web:latest'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/go_web:${_IMAGE_VERSION}'
+      - '-f'
+      - '.docker/go/Dockerfile'
+      - '--target'
+      - 'prod'
+      - '.'
