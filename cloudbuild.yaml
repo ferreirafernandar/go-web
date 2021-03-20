@@ -16,13 +16,16 @@ steps:
     name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
     args: ['-c', 'docker login --username=$$USERNAME --password=$$PASSWORD']
+    secretEnv: ['USERNAME', 'PASSWORD']
 
   - id: 'build image docker'  
     name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
     args: ['-c', 'docker build -t $$USERNAME/REPOSITORY:TAG -f .docker/go/Dockerfile .']
+    secretEnv: ['USERNAME','REPOSITORY','TAG']
 
   - id: 'push image docker'   
     name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
     args: ['-c', 'docker push $$USERNAME/REPOSITORY:TAG']
+    secretEnv: ['USERNAME','REPOSITORY','TAG']
