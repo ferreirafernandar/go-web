@@ -15,7 +15,7 @@ steps:
   - id: 'login docker hub'  
     name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
-    args: ['-c', 'docker login --username $$_USERNAME --password $$_PASSWORD']
+    args: ['-c', 'docker login -u ${_USERNAME} -p ${_PASSWORD}']
 
   - id: 'build image docker'  
     name: 'gcr.io/cloud-builders/docker'
