@@ -12,16 +12,17 @@ steps:
     args: ["test","./..."]
     env: ["GOPATH=."]
 
-  - id: 'build'
+  - id: 'login docker hub'  
     name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'build'
-      - '-t'
-      - 'gcr.io/$PROJECT_ID/go_web:latest'
-      - '-t'
-      - 'gcr.io/$PROJECT_ID/go_web:${_IMAGE_VERSION}'
-      - '-f'
-      - '.docker/go/Dockerfile'
-      - '--target'
-      - 'prod'
-      - '.'
+    entrypoint: 'bash'
+    args: ['-c', 'docker login --username=$$USERNAME --password=$$PASSWORD']
+
+  - id: 'build image docker'  
+    name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args: ['-c', 'docker build -t $$USERNAME/REPOSITORY:TAG -f .docker/go/Dockerfile .']
+
+  - id: 'push image docker'   
+    name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args: ['-c', 'docker push $$USERNAME/REPOSITORY:TAG']
