@@ -21,7 +21,7 @@ spec:
           image: mysql:latest
           args:
             # Depreceated in mysql 8 https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-0.html
-            # - "--ignore-db-dir=lost+found"
+            - "--ignore-db-dir=lost+found"
             - "--default-authentication-plugin=mysql_native_password"
           env:
             - name: MYSQL_USER
@@ -40,7 +40,7 @@ spec:
                   name: db-credentials-secret
                   key: root_passeord
             - name: MYSQL_DATABASE
-              value: test_db_k8s
+              value: db_k8s
           ports:
             - containerPort: 3306
           volumeMounts:
