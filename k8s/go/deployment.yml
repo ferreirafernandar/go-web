@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: go
-          image: yurikoster1/hello_go
+          image: ferreirafernandar/go_web
           ports:
             - containerPort: 8000
