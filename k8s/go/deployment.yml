@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-go
+  name: go-web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hello-go
+      app: go-web
   template:
     metadata:
       labels:
-        app: hello-go
+        app: go-web
     spec:
       containers:
         - name: go
